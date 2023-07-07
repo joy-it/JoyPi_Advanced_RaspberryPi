@@ -83,24 +83,44 @@ class stepmotor:
             self.step7()
             self.step8()
 
+    def turnReverse(self, count):
+        for i in range(int(count)):
+            self.step8()
+            self.step7()
+            self.step6()
+            self.step5()
+            self.step4()
+            self.step3()
+            self.step2()
+            self.step1()
+
     def end(self):
         GPIO.cleanup()
-        
         
     def turnSteps(self, steps):
         """ 
         Rotate by n steps
         """
-        self.turn(int(steps))
+        if steps < 0:
+            self.turnReverse(abs(int(steps)))
+        else:
+            self.turn(int(steps))
 
     def turnDegrees(self, deg):
         """ 
         Rotate n degrees
         """
-        self.turn(round(deg*512/360,0))
+        if deg < 0:
+            self.turnReverse(abs(round(deg*512/360,0)))
+        else:
+            self.turn(round(deg*512/360,0))
+
 
     def turnDistance(self, dist, rad):
         """
         Rotation by distance value
         """
-        self.turn(round(512*dist/(2*math.pi*rad),0))
+        if dist < 0:
+            self.turnReverse(abs(round(512*dist/(2*math.pi*rad),0)))
+        else:
+            self.turn(round(512*dist/(2*math.pi*rad),0))
