@@ -1,20 +1,24 @@
-# JoyPi_Advanced_RaspberryPi
-Library for several modules for the Raspberry Pi
+# Joy-Pi Advanced Library for Raspberry Pi
+This library is a collection for the Raspberry Pi for several modules on the Joy-Pi Advanced. See [here](https://www.joy-pi.net) for more information.
 
-## About the Joy Pi Advanced
-More information coming soon
+## Included modules
 
-## Note
-This repository was created for the use with the Joy Pi Advanced on the Raspberry Pi.
-
-This library includes ADC, gyroscope, barometer, button matrix, colour sensor, LED matrix, servo motor and step motor which are mounted on the Joy Pi Advanced.
+This library includes the following modules:
+- ADC
+- Gyroscope
+- Barometer
+- Button Matrix
+- Color Sensor
+- LED Matrix
+- Servo Motor
+- Stepper Motor
 
 ## Dependencies
-This library has some dependencies which are used to control the modules of the Joy Pi Advanced.
+This library has some dependencies which are used to control the modules of the Joy Pi Advanced. To use this library, you will need to install the following dependencies:
 
-[`rpi_ws281x`](https://github.com/jgarff/rpi_ws281x) - for the LED matrix
-[`Adafruit CircuitPython BusDevice`](https://github.com/adafruit/Adafruit_CircuitPython_BusDevice) - for the barometer
-[`Adafruit_CircuitPython_MCP230xx`](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx) - for the button matrix
+- [`rpi_ws281x`](https://github.com/jgarff/rpi_ws281x) - for the LED matrix
+- [`Adafruit CircuitPython BusDevice`](https://github.com/adafruit/Adafruit_CircuitPython_BusDevice) - for the barometer
+- [`Adafruit_CircuitPython_MCP230xx`](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx) - for the button matrix
 
 ## Installation
 ```
