@@ -50,7 +50,7 @@ sudo python3 setup.py install
 - `getKey()` - returns the pressed button
 - `clearMemory()` - clears class variable `calculated`
 - `calculate()` - method to use the button matrix as a calculator
-### Colour sensor
+### Color sensor
 - `colour(i2c_address = 0x10)`- initialize colour sensor with default values
 - `enableSensor()` - start communication
 - `disableSensor()`- end communication
@@ -76,7 +76,7 @@ sudo python3 setup.py install
 - `setHome()` - sets servomotor to start position
 - `getPosition()` - returns position of servo motor
 - `end()` - moves servo into start position, stops communication and cleans up communication
-### Step motor
+### Stepper motor
 - `stepmotor(pin1 = 22, pin2 = 23, pin3 = 24, pin4 = 4)`- initialize step motor with default values
 - `turnSteps(steps)` - turns a selected amount of steps
 - `turnDegrees(deg)` - turns a selected amount of degree
