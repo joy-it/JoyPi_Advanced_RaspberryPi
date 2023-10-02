@@ -85,13 +85,13 @@ class gyroscope:
         tiltThreshold = 2
         y = self.getYValue()
         x = self.getXValue()
-        if (y > tiltThreshold):
+        if (y > 5):
             return 'right'
-        elif (y < tiltThreshold):
+        elif (y < -5):
             return 'left'
-        elif (x > tiltThreshold):
+        elif (x > 3):
             return 'forward'
-        elif (x < tiltThreshold):
+        elif (x < -3):
             return 'backward'
         else:
             return 'No movement'
