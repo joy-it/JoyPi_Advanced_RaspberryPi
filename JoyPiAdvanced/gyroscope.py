@@ -1,5 +1,6 @@
 from spidev import SpiDev
 import time
+import RPi.GPIO as GPIO
     
 class gyroscope:
 
@@ -8,12 +9,15 @@ class gyroscope:
     scale_range = 46.5
     offset = 0
     
-    def __init__(self, bus = 0, device = 2):
+    def __init__(self, bus = 0, device = 0, cs = 14):
         self.bus, self.device = bus, device
         self.spi = SpiDev()
-        
         self.open()
         self.spi.max_speed_hz = 1000000 # 1MHz
+        self.cs = cs
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.cs, GPIO.OUT, initial=GPIO.HIGH)
         tmp = self.read_register(27) & 0x26
         self.write_register(27, 0x18 | tmp)
  
@@ -31,13 +35,16 @@ class gyroscope:
         Closes SPI communication
         """
         self.spi.close()
+        GPIO.cleanup()
 
         
     def read_register(self, reg):
         """
         read value from register
         """
+        GPIO.output(self.cs, GPIO.LOW)
         tmp = self.spi.xfer3([(reg | 0x80), 0])
+        GPIO.output(self.cs, GPIO.HIGH)
         return tmp[1]
 
         
@@ -45,7 +52,9 @@ class gyroscope:
         """
         write value to register
         """
+        GPIO.output(self.cs, GPIO.LOW)
         self.spi.writebytes([ (reg & 0x7F), data])
+        GPIO.output(self.cs, GPIO.HIGH)
        
         
     def getTemperature(self):
