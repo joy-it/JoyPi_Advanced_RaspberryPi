@@ -2,7 +2,6 @@
 This library is a collection for the Raspberry Pi for several modules on the Joy-Pi Advanced. See [here](https://www.joy-pi.net) for more information.
 
 ## Included modules
-
 This library includes the following modules:
 - ADC
 - Gyroscope
@@ -12,6 +11,9 @@ This library includes the following modules:
 - LED Matrix
 - Servo Motor
 - Stepper Motor
+
+> [!WARNING]
+> The Joy-Pi Advanced 2 is no longer compatible with this library for the LED Matrix. To ensure compatibility with the Raspberry Pi 5, the LED matrix is now controlled via I²C because of the RP2040 microcontroller chip. The LED matrix can now be controlled with the Joy-Pi Advanced via [this repository](http://github.com/joy-it/JoyPi_RGB_Matrix_RaspberryPi).
 
 ## Dependencies
 This library has some dependencies which are used to control the modules of the Joy Pi Advanced. To use this library, you will need to install the following dependencies:

@@ -1,8 +1,15 @@
 import time
 from rpi_ws281x import PixelStrip, Color
 
-class LEDMatrix:
 
+class LEDMatrix:
+    """
+    The Joy-Pi Advanced 2 is no longer compatible with this library for the LED 
+    matrix. To ensure compatibility with the Raspberry Pi 5, the LED matrix is now 
+    controlled via I²C because of the RP2040 microcontroller chip. The LED matrix 
+    can now be controlled with the Joy-Pi Advanced via this repository
+    http://github.com/joy-it/JoyPi_RGB_Matrix_RaspberryPi
+    """
     def __init__(self, pin = 18, brightness = 100):
         # LED strip configuration
         self.LED_COUNT = 64              # Number of pixels
