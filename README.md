@@ -74,7 +74,8 @@ sudo python3 setup.py install
 - `demo2()` - demo program version 2 
 ### Servo motor
 - `servomotor(pin = 18, position = 0)` - initialize servo motor with default values
-- `setDirection(set_pos, speed = 5)` - moves servomotor to a selected position (`set_pos`) with default speed
+- `setDirection(set_pos, speed = 5)` - moves servomotor to a selected position in specified speed (1-5 : slowest - fastest)
+- `setPosition(pos)` -  moves servomotor to a selected position with default speed
 - `setHome()` - sets servomotor to start position
 - `getPosition()` - returns position of servo motor
 - `end()` - moves servo into start position, stops communication and cleans up communication
