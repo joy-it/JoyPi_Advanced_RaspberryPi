@@ -84,4 +84,3 @@ sudo python3 setup.py install
 - `turnSteps(steps)` - turns a selected amount of steps
 - `turnDegrees(deg)` - turns a selected amount of degree
 - `turnDistance(dist, rad)` - rotates by distance value
-- `end()` - clears up communication

@@ -1,76 +1,63 @@
 import math
-import RPi.GPIO as GPIO
+from gpiozero import DigitalOutputDevice
 import time
 
 class stepmotor:
 
     def __init__(self, pin1 = 22, pin2 = 23, pin3 = 24, pin4 = 4):
-        self.pin_A = pin1
-        self.pin_B = pin2
-        self.pin_C = pin3
-        self.pin_D = pin4
+        self.pin_A = DigitalOutputDevice(pin1, initial_value = False)
+        self.pin_B = DigitalOutputDevice(pin2, initial_value = False)
+        self.pin_C = DigitalOutputDevice(pin3, initial_value = False)
+        self.pin_D = DigitalOutputDevice(pin4, initial_value = False)
         self.interval = 0.0011
 
-        GPIO.setmode(GPIO.BCM)
-        
-        # Configure pins as output
-        GPIO.setup(self.pin_A,GPIO.OUT)
-        GPIO.setup(self.pin_B,GPIO.OUT)
-        GPIO.setup(self.pin_C,GPIO.OUT)
-        GPIO.setup(self.pin_D,GPIO.OUT)
-        
-        GPIO.output(self.pin_A, False)
-        GPIO.output(self.pin_B, False)
-        GPIO.output(self.pin_C, False)
-        GPIO.output(self.pin_D, False)
-
     def step1(self):
-        GPIO.output(self.pin_D, True)
+        self.pin_D.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_D, False)
+        self.pin_D.off()
 
     def step2(self):
-        GPIO.output(self.pin_D, True)
-        GPIO.output(self.pin_C, True)
+        self.pin_D.on()
+        self.pin_C.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_D, False)
-        GPIO.output(self.pin_C, False)
+        self.pin_D.off()
+        self.pin_C.off()
 
     def step3(self):
-        GPIO.output(self.pin_C, True)
+        self.pin_C.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_C, False)
+        self.pin_C.off()
 
     def step4(self):
-        GPIO.output(self.pin_B, True)
-        GPIO.output(self.pin_C, True)
+        self.pin_B.on()
+        self.pin_C.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_B, False)
-        GPIO.output(self.pin_C, False)
+        self.pin_B.off()
+        self.pin_C.off()
 
     def step5(self):
-        GPIO.output(self.pin_B, True)
+        self.pin_B.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_B, False)
+        self.pin_B.off()
 
     def step6(self):
-        GPIO.output(self.pin_A, True)
-        GPIO.output(self.pin_B, True)
+        self.pin_A.on()
+        self.pin_B.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_A, False)
-        GPIO.output(self.pin_B, False)
+        self.pin_A.off()
+        self.pin_B.off()
 
     def step7(self):
-        GPIO.output(self.pin_A, True)
+        self.pin_A.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_A, False)
+        self.pin_A.off()
 
     def step8(self):
-        GPIO.output(self.pin_D, True)
-        GPIO.output(self.pin_A, True)
+        self.pin_D.on()
+        self.pin_A.on()
         time.sleep(self.interval)
-        GPIO.output(self.pin_D, False)
-        GPIO.output(self.pin_A, False)
+        self.pin_D.off()
+        self.pin_A.off()
 
     def turn(self,count):
         for i in range (int(count)):
@@ -94,9 +81,6 @@ class stepmotor:
             self.step2()
             self.step1()
 
-    def end(self):
-        GPIO.cleanup()
-        
     def turnSteps(self, steps):
         """ 
         Rotate by n steps
