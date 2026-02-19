@@ -24,17 +24,20 @@ class buttonmatrix:
                   (3, 2) : "+",
                   (3, 3) : "-"}
     
-    def __init__(self, i2c: busio.I2C, i2c_address = 0x22):
+    def __init__(self, i2c: busio.I2C, bounce_time = 0.15, i2c_address = 0x22):
         """
         i2c - i2c port
         i2c_address - address of the barometer
+        bounce_time - buffer time for buttons
         """
         self.i2c_address = i2c_address
         mcp = MCP23008(i2c, address = self.i2c_address)
         self.rows = [mcp.get_pin(4), mcp.get_pin(5), mcp.get_pin(6), mcp.get_pin(7)]
         self.columns = [mcp.get_pin(0), mcp.get_pin(1), mcp.get_pin(2), mcp.get_pin(3)]
         self.calculated = ""
-        
+        self.bounce_time = bounce_time
+        self._last_key = None
+        self._last_time = 0
         for i in range(len(self.rows)):
             self.rows[i].direction = digitalio.Direction.INPUT
             self.rows[i].pull = digitalio.Pull.UP
@@ -78,10 +81,21 @@ class buttonmatrix:
         """
         returns the name of the button which was pressed
         """
+        key = None
         try:
-            return self.dictionary[self._checkMatrix()]
+            key = self.dictionary[self._checkMatrix()]
         except KeyError:
+            key = None
+        current_time = time.monotonic()
+
+        if key is None:
+            self._last_key = None
             return None
+        if key == self._last_key and (current_time - self._last_time) < self.bounce_time:
+            return None
+        self._last_key = key
+        self._last_time = current_time
+        return key
 
     def clearMemory(self):
         """
