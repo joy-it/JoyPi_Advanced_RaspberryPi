@@ -81,6 +81,12 @@ class stepmotor:
             self.step2()
             self.step1()
 
+    def close(self):
+        self.pin_A.close()
+        self.pin_B.close()
+        self.pin_C.close()
+        self.pin_D.close()
+
     def turnSteps(self, steps):
         """ 
         Rotate by n steps

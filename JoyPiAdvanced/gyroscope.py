@@ -32,6 +32,7 @@ class gyroscope:
         Closes SPI communication
         """
         self.spi.close()
+        self.cs.close()
 
         
     def read_register(self, reg):
