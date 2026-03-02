@@ -23,7 +23,7 @@ This library has some dependencies which are used to control the modules of the 
 - [`Adafruit_CircuitPython_MCP230xx`](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx) - for the button matrix - with `pip install adafruit-circuitpython-mcp230xx` 
 
 ## Installation
-```
+```bash
 pip install JoyPi_Advanced_RaspberryPi
 ```
 ## Library Guide
