@@ -18,15 +18,13 @@ This library includes the following modules:
 ## Dependencies
 This library has some dependencies which are used to control the modules of the Joy Pi Advanced. To use this library, you will need to install the following dependencies:
 
-- [`rpi_ws281x`](https://github.com/jgarff/rpi_ws281x) - for the LED matrix
-- [`Adafruit CircuitPython BusDevice`](https://github.com/adafruit/Adafruit_CircuitPython_BusDevice) - for the barometer
-- [`Adafruit_CircuitPython_MCP230xx`](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx) - for the button matrix
+- [`rpi_ws281x`](https://github.com/jgarff/rpi_ws281x) - for the LED matrix - with `pip install rpi_ws281x` 
+- [`Adafruit CircuitPython BusDevice`](https://github.com/adafruit/Adafruit_CircuitPython_BusDevice) - for the barometer - with `pip install adafruit-circuitpython-busdevice` 
+- [`Adafruit_CircuitPython_MCP230xx`](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx) - for the button matrix - with `pip install adafruit-circuitpython-mcp230xx` 
 
 ## Installation
 ```
-git clone https://github.com/joy-it/JoyPi_Advanced_RaspberryPi.git
-cd JoyPi_Advanced_RaspberryPi
-sudo python3 setup.py install
+pip install JoyPi_Advanced_RaspberryPi
 ```
 ## Library Guide
 ### ADC

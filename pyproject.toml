@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "JoyPi_Advanced_RaspberryPi"
+version = "2.0.0"
+authors = [
+  { name="Joy-IT", email="service@joy-it.net" },
+]
+description = "This library enables usage of some sensors and actors of the Joy-Pi Advanced on the Raspberry Pi."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/joy-it/JoyPi_Advanced_RaspberryPi"
+Issues = "https://github.com/joy-it/JoyPi_Advanced_RaspberryPi/issues"
