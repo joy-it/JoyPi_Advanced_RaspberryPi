@@ -36,12 +36,50 @@ import numpy as np
 
 class colour:
 
-    def __init__(self, i2c_address = 0x10):
+    REG_CONF = 0x00
+    REG_RED = 0x08
+    REG_GREEN = 0x09
+    REG_BLUE = 0x0A
+    REG_WHITE = 0x0B
+
+    INTERGRATION_TIME_40MS = 0
+    INTERGRATION_TIME_80MS = 1
+    INTERGRATION_TIME_160MS = 2
+    INTERGRATION_TIME_320MS = 3
+    INTERGRATION_TIME_640MS = 4
+    INTERGRATION_TIME_1280MS = 5
+
+    _INTERGRATION_TIME_VALUES = {
+        INTERGRATION_TIME_40MS: 0x00,
+        INTERGRATION_TIME_80MS: 0x10,
+        INTERGRATION_TIME_160MS: 0x20,
+        INTERGRATION_TIME_320MS: 0x30,
+        INTERGRATION_TIME_640MS: 0x40,
+        INTERGRATION_TIME_1280MS: 0x50,
+    }
+
+    _INTERGRATION_TIME_DELAY = {
+        INTERGRATION_TIME_40MS: 0.05,
+        INTERGRATION_TIME_80MS: 0.09,
+        INTERGRATION_TIME_160MS: 0.17,
+        INTERGRATION_TIME_320MS: 0.33,
+        INTERGRATION_TIME_640MS: 0.65,
+        INTERGRATION_TIME_1280MS: 1.29,
+    }
+
+    BIT_SD = 0x01
+    BIT_AF = 0x02
+    BIT_TRIG = 0x04
+    MASK_INTERGRATION_TIME = 0x70
+
+    def __init__(self,  i2c: busio.I2C, integration_time=INTERGRATION_TIME_160MS, i2c_address = 0x10):
         """
         initialize colour sensor
         i2c_address - i2c_address of colour sensor (default 0x10)
         """
         self.address = i2c_address
+        if integration_time not in self._INTERGRATION_TIME_VALUES:
+            raise ValueError("integration_time is not in range")
         self.integration_time = integration_time
         self.device = i2c_device.I2CDevice(i2c, self.address)
         self.enableSensor()
@@ -82,39 +120,79 @@ class colour:
         """
         activate Sensor
         """
-        conf = self.read(0x00) & 0x00FE
-        self.write(0x00, conf)
+        config = self._INTERGRATION_TIME_VALUES[self.integration_time]
+        config &= ~self.BIT_SD
+        config &= ~self.BIT_AF
+        config &= ~self.BIT_TRIG
+        self.write(self.REG_CONF, config)
+        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
         
     def disableSensor(self):
         """
         deactivate Sensor
         """
-        conf = (self.read(0x00) & 0x00FE) | 0x000
-        self.write(0x00, conf)
-        time.sleep(.001)
+        config = self.read(self.REG_CONF)
+        config |= self.BIT_SD
+        self.write(self.REG_CONF, config)
+        
+    def setIntegrationTime(self, integration_time):
+        """
+        set integration time with variable integration_time
+        integration_time - _INTERGRATION_TIME_VALUES 
+            INTERGRATION_TIME_40MS = 40 ms
+            INTERGRATION_TIME_80MS = 80 ms
+            INTERGRATION_TIME_160MS = 160 ms
+            INTERGRATION_TIME_320MS = 320 ms
+            INTERGRATION_TIME_640MS = 640 ms
+            INTERGRATION_TIME_1280MS = 1280 ms
+        """
+        if integration_time not in self._INTERGRATION_TIME_VALUES:
+            raise ValueError("integration_time is not in range")
+        config = self.read(self.REG_CONF)
+        config &= ~self.MASK_INTERGRATION_TIME
+        config |= self._INTERGRATION_TIME_VALUES[integration_time]
+        config &= ~self.BIT_SD
+        self.integration_time = integration_time
+        self.write(self.REG_CONF, config)
+        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
+        
+    def getRed(self):
+        """
+        returns measured value for colour red
+        """
+        return self.read(self.REG_RED)
+
+    def getBlue(self):
+        """
+        returns measured value for colour blue
+        """
+        return self.read(self.REG_BLUE)
+
+    def getGreen(self):
+        """
+        returns measured value for colour green
+        """
+        return self.read(self.REG_GREEN)
+    
+    def getWhite(self):
+        """
+        returns measured value for colour white
+        """
+        return self.read(self.REG_WHITE)
     
     def getRGBW(self):
         """
         returns colour values from colour sensor - red, green, blue, white
         """
-        return self.read(0x08), self.read(0x09), int(self.read(0x0A) * 1.5), self.read(0x0B)
-        
-    def setIntegrationTime(self, int_time):
-        """
-        set integration time with variable int_time
-        int_time - integration time 
-            0 = 40 ms
-            1 = 80 ms
-            2 = 160 ms
-            3 = 320 ms
-            4 = 640 ms
-            5 = 1280 ms
-        """
-        if int_time < 0 or int_time > 5:
-            raise ValueError('int_time is not in range')
-        conf = self.read(0x00) & 0x0003
-        self.write(0x00, (conf | (int_time << 4)))
-        
+        red = self.getRed()
+        time.sleep(0.005)
+        green = self.getGreen()
+        time.sleep(0.005)
+        blue = self.getBlue()
+        time.sleep(0.005)
+        white = self.getWhite()
+        return red, green, blue, white
+
     def forceMode(self):
         """
         forces measurement mode - triggers to start
@@ -131,17 +209,24 @@ class colour:
         """
         automatic measurement mode
         """
-        conf = self.read(0x00) & 0x0070
-        self.write(0x00, conf)
+        config = self.read(self.REG_CONF)
+        config &= self.MASK_INTERGRATION_TIME
+        config &= ~self.BIT_AF
+        config &= ~self.BIT_TRIG
+        config &= ~self.BIT_SD
+        self.write(self.REG_CONF, config)
+        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
     
     def readAll(self):
         """
         returns most recognized colour and raw values
         """
-        r, g, b, w = self.getRGBW()
-        raw_val = [r, g, b, w]
-        dominant_col, dominant_val = "red", r
-        if g > dominant_val: dominant_col, dominant_val = "green", g
-        if b > dominant_val: dominant_col, dominant_val = "blue", b
-        
-        return dominant_col, raw_val
+        red, green, blue, white = self.getRGBW()
+        values = {
+            "red": red,
+            "green": green,
+            "blue": blue,
+        }
+
+        dominant_color = max(values, key=values.get)
+        return dominant_color, [red, green, blue, white]
