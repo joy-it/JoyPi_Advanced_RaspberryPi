@@ -2,14 +2,18 @@
 # Required modules are inserted and configured
 import time
 from JoyPi_Advanced_RaspberryPi import colour
+import busio
+import board
 
+# Create I2C bus.
+i2c = busio.I2C(board.SCL, board.SDA)
 # Create object sensor to control colour sensor
-sensor = colour()
+colour_sensor = colour(i2c, colour.INTEGRATION_TIME_160MS)
 
 # set integration time
-sensor.setIntegrationTime(2)
+colour_sensor.setIntegrationTime(colour.INTEGRATION_TIME_160MS)
 # set senor to auti�Mode
-sensor.autoMode()
+colour_sensor.autoMode()
 # initialize variable to save last printed colour
 last_colour = ""
 
@@ -17,7 +21,7 @@ last_colour = ""
 try:
     while True:
         # get dominant colour and raw values
-        colour, raw_values = sensor.readAll()
+        colour, raw_values = colour_sensor.readAll()
         # check if a new colour is detected
         if last_colour != colour:
             # print colour and raw values
@@ -26,4 +30,4 @@ try:
             last_colour = colour
 except:
     # deactivate colour sensor
-    sensor.disableSensor()
+    colour_sensor.disableSensor()
