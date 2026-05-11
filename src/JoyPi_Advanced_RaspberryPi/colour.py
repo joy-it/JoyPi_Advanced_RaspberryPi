@@ -28,7 +28,8 @@
 # Step 2) sudo apt-get install i2c-tools python3-smbus
 # Step 3) plug it in (don't forget your pull-up resistors) and run this program
 
-import smbus
+import busio
+from adafruit_bus_device import i2c_device
 import time
 import threading
 import numpy as np
@@ -41,7 +42,8 @@ class colour:
         i2c_address - i2c_address of colour sensor (default 0x10)
         """
         self.address = i2c_address
-        self.bus = smbus.SMBus(1)
+        self.integration_time = integration_time
+        self.device = i2c_device.I2CDevice(i2c, self.address)
         self.enableSensor()
     
     def write(self, cmd, val):
@@ -50,7 +52,13 @@ class colour:
         cmd - register
         val - value to be written
         """
-        self.bus.write_word_data(self.address, cmd, val)
+        data = bytes([
+            cmd & 0xFF,
+            val & 0xFF,
+            (val >> 8) & 0xFF,
+        ])
+        with self.device as bus_device:
+            bus_device.write(data)
     
     def read(self, cmd):
         """
@@ -100,8 +108,13 @@ class colour:
         """
         forces measurement mode - triggers to start
         """
-        conf = (self.read(0x00) & 0x0072) | 0x0002
-        self.write(0x00, conf)
+        config = self.read(self.REG_CONF)
+        config &= self.MASK_INTERGRATION_TIME
+        config |= self.BIT_AF
+        config |= self.BIT_TRIG
+        config &= ~self.BIT_SD
+        self.write(self.REG_CONF, config)
+        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
         
     def autoMode(self):
         """
