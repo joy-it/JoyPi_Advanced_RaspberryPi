@@ -65,8 +65,19 @@ class colour:
         read value from register on the colour sensor
         cmd - register
         """
-        return self.bus.read_word_data(self.address, cmd)
-        
+        register = bytes([cmd & 0xFF])
+        data = bytearray(2)
+        last_error = None
+        for _ in range(3):
+            try:
+                with self.device as bus_device:
+                    bus_device.write_then_readinto(register, data)
+                return data[0] | (data[1] << 8)
+            except OSError as error:
+                last_error = error
+                time.sleep(0.02)
+        raise last_error
+
     def enableSensor(self):
         """
         activate Sensor
