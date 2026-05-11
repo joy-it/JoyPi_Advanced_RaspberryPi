@@ -42,43 +42,43 @@ class colour:
     REG_BLUE = 0x0A
     REG_WHITE = 0x0B
 
-    INTERGRATION_TIME_40MS = 0
-    INTERGRATION_TIME_80MS = 1
-    INTERGRATION_TIME_160MS = 2
-    INTERGRATION_TIME_320MS = 3
-    INTERGRATION_TIME_640MS = 4
-    INTERGRATION_TIME_1280MS = 5
+    INTEGRATION_TIME_40MS = 0
+    INTEGRATION_TIME_80MS = 1
+    INTEGRATION_TIME_160MS = 2
+    INTEGRATION_TIME_320MS = 3
+    INTEGRATION_TIME_640MS = 4
+    INTEGRATION_TIME_1280MS = 5
 
-    _INTERGRATION_TIME_VALUES = {
-        INTERGRATION_TIME_40MS: 0x00,
-        INTERGRATION_TIME_80MS: 0x10,
-        INTERGRATION_TIME_160MS: 0x20,
-        INTERGRATION_TIME_320MS: 0x30,
-        INTERGRATION_TIME_640MS: 0x40,
-        INTERGRATION_TIME_1280MS: 0x50,
+    _INTEGRATION_TIME_VALUES = {
+        INTEGRATION_TIME_40MS: 0x00,
+        INTEGRATION_TIME_80MS: 0x10,
+        INTEGRATION_TIME_160MS: 0x20,
+        INTEGRATION_TIME_320MS: 0x30,
+        INTEGRATION_TIME_640MS: 0x40,
+        INTEGRATION_TIME_1280MS: 0x50,
     }
 
-    _INTERGRATION_TIME_DELAY = {
-        INTERGRATION_TIME_40MS: 0.05,
-        INTERGRATION_TIME_80MS: 0.09,
-        INTERGRATION_TIME_160MS: 0.17,
-        INTERGRATION_TIME_320MS: 0.33,
-        INTERGRATION_TIME_640MS: 0.65,
-        INTERGRATION_TIME_1280MS: 1.29,
+    _INTEGRATION_TIME_DELAY = {
+        INTEGRATION_TIME_40MS: 0.05,
+        INTEGRATION_TIME_80MS: 0.09,
+        INTEGRATION_TIME_160MS: 0.17,
+        INTEGRATION_TIME_320MS: 0.33,
+        INTEGRATION_TIME_640MS: 0.65,
+        INTEGRATION_TIME_1280MS: 1.29,
     }
 
     BIT_SD = 0x01
     BIT_AF = 0x02
     BIT_TRIG = 0x04
-    MASK_INTERGRATION_TIME = 0x70
+    MASK_INTEGRATION_TIME = 0x70
 
-    def __init__(self,  i2c: busio.I2C, integration_time=INTERGRATION_TIME_160MS, i2c_address = 0x10):
+    def __init__(self,  i2c: busio.I2C, integration_time=INTEGRATION_TIME_160MS, i2c_address = 0x10):
         """
         initialize colour sensor
         i2c_address - i2c_address of colour sensor (default 0x10)
         """
         self.address = i2c_address
-        if integration_time not in self._INTERGRATION_TIME_VALUES:
+        if integration_time not in self._INTEGRATION_TIME_VALUES:
             raise ValueError("integration_time is not in range")
         self.integration_time = integration_time
         self.device = i2c_device.I2CDevice(i2c, self.address)
@@ -120,12 +120,12 @@ class colour:
         """
         activate Sensor
         """
-        config = self._INTERGRATION_TIME_VALUES[self.integration_time]
+        config = self._INTEGRATION_TIME_VALUES[self.integration_time]
         config &= ~self.BIT_SD
         config &= ~self.BIT_AF
         config &= ~self.BIT_TRIG
         self.write(self.REG_CONF, config)
-        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
+        time.sleep(self._INTEGRATION_TIME_DELAY[self.integration_time])
         
     def disableSensor(self):
         """
@@ -138,23 +138,23 @@ class colour:
     def setIntegrationTime(self, integration_time):
         """
         set integration time with variable integration_time
-        integration_time - _INTERGRATION_TIME_VALUES 
-            INTERGRATION_TIME_40MS = 40 ms
-            INTERGRATION_TIME_80MS = 80 ms
-            INTERGRATION_TIME_160MS = 160 ms
-            INTERGRATION_TIME_320MS = 320 ms
-            INTERGRATION_TIME_640MS = 640 ms
-            INTERGRATION_TIME_1280MS = 1280 ms
+        integration_time - _INTEGRATION_TIME_VALUES 
+            INTEGRATION_TIME_40MS = 40 ms
+            INTEGRATION_TIME_80MS = 80 ms
+            INTEGRATION_TIME_160MS = 160 ms
+            INTEGRATION_TIME_320MS = 320 ms
+            INTEGRATION_TIME_640MS = 640 ms
+            INTEGRATION_TIME_1280MS = 1280 ms
         """
-        if integration_time not in self._INTERGRATION_TIME_VALUES:
+        if integration_time not in self._INTEGRATION_TIME_VALUES:
             raise ValueError("integration_time is not in range")
         config = self.read(self.REG_CONF)
-        config &= ~self.MASK_INTERGRATION_TIME
-        config |= self._INTERGRATION_TIME_VALUES[integration_time]
+        config &= ~self.MASK_INTEGRATION_TIME
+        config |= self._INTEGRATION_TIME_VALUES[integration_time]
         config &= ~self.BIT_SD
         self.integration_time = integration_time
         self.write(self.REG_CONF, config)
-        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
+        time.sleep(self._INTEGRATION_TIME_DELAY[self.integration_time])
         
     def getRed(self):
         """
@@ -198,24 +198,24 @@ class colour:
         forces measurement mode - triggers to start
         """
         config = self.read(self.REG_CONF)
-        config &= self.MASK_INTERGRATION_TIME
+        config &= self.MASK_INTEGRATION_TIME
         config |= self.BIT_AF
         config |= self.BIT_TRIG
         config &= ~self.BIT_SD
         self.write(self.REG_CONF, config)
-        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
+        time.sleep(self._INTEGRATION_TIME_DELAY[self.integration_time])
         
     def autoMode(self):
         """
         automatic measurement mode
         """
         config = self.read(self.REG_CONF)
-        config &= self.MASK_INTERGRATION_TIME
+        config &= self.MASK_INTEGRATION_TIME
         config &= ~self.BIT_AF
         config &= ~self.BIT_TRIG
         config &= ~self.BIT_SD
         self.write(self.REG_CONF, config)
-        time.sleep(self._INTERGRATION_TIME_DELAY[self.integration_time])
+        time.sleep(self._INTEGRATION_TIME_DELAY[self.integration_time])
     
     def readAll(self):
         """
