@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "JoyPi_Advanced_RaspberryPi"
-version = "2.0.0"
+version = "2.0.1"
 authors = [
   { name="Joy-IT", email="service@joy-it.net" },
 ]
