@@ -22,7 +22,7 @@ This library has some dependencies which are used to control the modules of the 
 
 ## Installation
 ```bash
-pip install JoyPi_Advanced_RaspberryPi
+pip install JoyPi-Advanced-RaspberryPi
 ```
 ## Library Guide
 ### ADC
